@@ -18,9 +18,31 @@ function App() {
     });
   }, [null]);
 
+  function changeSub() {
+    axios.get('https://www.reddit.com/r/'+inputRef.current.value+'/hot.json?limit=10')
+    .then((response) => {
+        setData(response.data.data.children);
+    })
+    .catch((err) => {
+        console.log(err)
+    });
+  }
+
+  let inputRef = React.useRef();
+
   return (
     <div className="App">
       <h1>Reddit News </h1>
+      <div className="sub">
+        <input
+          className='inputField' 
+          type='text' 
+          placeholder='type subreddit'
+          name='subReddit'
+          ref={inputRef}
+        />
+        <button className='btn' onClick={changeSub}>Change</button>
+      </div>
       <div className="cards">
         {data.map((item, index) => (
           <div key={index}>
