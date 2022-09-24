@@ -1,47 +1,103 @@
-import News from './components/News';
-import React from 'react';
-import axios from 'axios';
+import News from "./components/News";
+import React, { useRef } from "react";
+import axios from "axios";
 
 function App() {
-
-  const api_url = 'https://www.reddit.com/r/news/hot.json?limit=10';
   const [data, setData] = React.useState([]);
-
-  React.useEffect(() => {
-    console.log("called");
-    axios.get(api_url)
-    .then((response) => {
-        setData(response.data.data.children);
-    })
-    .catch((err) => {
-        console.log(err)
-    });
-  }, [null]);
-
-  function changeSub() {
-    axios.get('https://www.reddit.com/r/'+inputRef.current.value+'/hot.json?limit=10')
-    .then((response) => {
-        setData(response.data.data.children);
-    })
-    .catch((err) => {
-        console.log(err)
-    });
-  }
+  const [subreddit, setSubreddit] = React.useState("news");
+  const api_url =
+    "https://www.reddit.com/r/" + subreddit + "/hot.json?limit=10";
 
   let inputRef = React.useRef();
+  let btnRef = useRef();
+
+  React.useEffect(() => {
+    axios
+      .get(api_url)
+      .then((response) => {
+        setData(response.data.data.children);
+        btnRef.current.removeAttribute("disabled");
+        btnRef.current.classList.remove("btn--loading");
+      })
+      .catch((err) => {
+        console.log(err);
+        btnRef.current.removeAttribute("disabled");
+        btnRef.current.classList.remove("btn--loading");
+      });
+  }, [subreddit]);
+
+  function changeSub() {
+    if (subreddit == inputRef.current.value) {
+      alert("You are already on this subreddit.");
+      return;
+    }
+    // setSubreddit to change the subreddit which calls useEffect to get data for this new subreddit
+    btnRef.current.setAttribute("disabled", "disabled");
+    btnRef.current.classList.add("btn--loading");
+    setSubreddit(inputRef.current.value);
+  }
 
   return (
-    <div className="App">
+    <div className="App container">
       <h1>Reddit News </h1>
       <div className="sub">
+        <ul className="tags">
+          <li>
+            <a
+              onClick={() => {
+                setSubreddit("worldnews");
+              }}
+            >
+              World
+            </a>
+          </li>
+          <li>
+            <a
+              onClick={() => {
+                setSubreddit("canada");
+              }}
+            >
+              Canada
+            </a>
+          </li>
+          <li>
+            <a
+              onClick={() => {
+                setSubreddit("sports");
+              }}
+            >
+              Sports
+            </a>
+          </li>
+          <li>
+            <a
+              onClick={() => {
+                setSubreddit("technology");
+              }}
+            >
+              Technology
+            </a>
+          </li>
+          <li>
+            <a
+              onClick={() => {
+                setSubreddit("politics");
+              }}
+            >
+              Politics
+            </a>
+          </li>
+        </ul>
         <input
-          className='inputField' 
-          type='text' 
-          placeholder='type subreddit'
-          name='subReddit'
+          className="inputField"
+          type="text"
+          placeholder="type subreddit"
+          name="subReddit"
           ref={inputRef}
         />
-        <button className='btn' onClick={changeSub}>Change</button>
+        <button className="btn" ref={btnRef} onClick={changeSub}>
+          Change
+        </button>
       </div>
       <div className="cards">
         {data.map((item, index) => (
