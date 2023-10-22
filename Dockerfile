@@ -7,7 +7,7 @@ WORKDIR /app/
 # Copy other project files and build
 COPY . ./
 RUN npm install
-RUN npm build
+RUN npm run build
 
 FROM nginx:latest
 
@@ -17,6 +17,7 @@ COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 
 # Copy build files
 COPY --from=builder /app/build /usr/share/nginx/html
+RUN rm -rf /app
 
 # Set working directory
 WORKDIR /usr/share/nginx/html
