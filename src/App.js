@@ -27,7 +27,7 @@ function App() {
     }, [subreddit]);
 
     function changeSub() {
-        if (subreddit == inputRef.current.value) {
+        if (subreddit === inputRef.current.value) {
             alert("You are already on this subreddit.");
             return;
         }
@@ -114,7 +114,11 @@ function App() {
             <div className="footer_text">
                 <p>
                     Made by{" "}
-                    <a href="https://arashveer.com" target="_blank">
+                    <a
+                        href="https://arashveer.com"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
                         Arashveer Garaya
                     </a>
                 </p>

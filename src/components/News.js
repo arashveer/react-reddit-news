@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import axios from "axios";
-import React, { useRef } from "react";
+import React from "react";
 
 const News = (props) => {
     const [metaData, setmetaData] = React.useState([]);
@@ -58,7 +58,7 @@ const News = (props) => {
             <div className="news_content">
                 <p className="news_time">{timeSince(props.data.created_utc)}</p>
                 <h3>
-                    <a href={props.data.url} target="_blank">
+                    <a href={props.data.url} target="_blank" rel="noreferrer">
                         {props.data.title}
                     </a>
                 </h3>
