@@ -1,9 +1,27 @@
-FROM node:18
+# Set base image
+FROM node:18 AS builder
 
-COPY package.json /app/
-COPY src /app/
+# Set working directory
+WORKDIR /app/
 
-WORKDIR /app
-
+# Copy other project files and build
+COPY . ./
 RUN npm install
-CMD [ "npm", "start" ]
+RUN npm build
+
+FROM nginx:latest
+
+# Nginx config
+RUN rm -rf /etc/nginx/conf.d/default.conf
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+
+# Copy build files
+COPY --from=builder /app/build /usr/share/nginx/html
+
+# Set working directory
+WORKDIR /usr/share/nginx/html
+
+EXPOSE 80
+
+# Start Nginx server
+CMD ["/bin/bash", "-c", "nginx -g \"daemon off;\""]
